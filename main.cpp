@@ -85,8 +85,9 @@ public:
     }
 };
 
-void executeIndividualTasks()
+vector<string> executeIndividualTasks()
 {
+    vector<string> outputFile;
     fstream readInputFile;
     readInputFile.open("input.txt", ios::in);
     string task;
@@ -103,6 +104,7 @@ void executeIndividualTasks()
                 ParkingLot *temp = new ParkingLot(stoi(individualTask));
                 parkingLot = temp;
                 cout<<"Created parking of " + individualTask + " slots"<<endl;
+                outputFile.push_back("Created parking of " + individualTask + " slots");
             }
             else if (individualTask == "Park")
             {
@@ -113,6 +115,7 @@ void executeIndividualTasks()
                 int ageOfDriver = stoi(individualTask);
                 string output = parkingLot->parkVehicle(registrationPlate, ageOfDriver);
                 cout<<output<<endl;
+                outputFile.push_back(output);
             }
             else if (individualTask == "Slot_numbers_for_driver_of_age")
             {
@@ -122,6 +125,7 @@ void executeIndividualTasks()
                 if (!slotSize)
                 {
                     cout<<"No such vehicle in the lot."<<endl;
+                    outputFile.push_back("No such vehicle in the lot.");
                     continue;
                 }
                 string outStr = "";
@@ -132,6 +136,7 @@ void executeIndividualTasks()
                         outStr += ",";
                 }
                 cout<<outStr<<endl;
+                outputFile.push_back(outStr);
             }
             else if (individualTask == "Slot_number_for_car_with_number")
             {
@@ -140,10 +145,12 @@ void executeIndividualTasks()
                 if (!slot)
                 {
                     cout<<"No such vehicle in the parking lot."<<endl;
+                    outputFile.push_back("No such vehicle in the parking lot.");
                 }
                 else
                 {
                     cout<<to_string(slot)<<endl;
+                    outputFile.push_back(to_string(slot));
                 }
             }
             else if (individualTask == "Leave")
@@ -152,6 +159,7 @@ void executeIndividualTasks()
                 int spotToBeEmptied = stoi(individualTask);
                 string output = parkingLot->emptyTheSpot(spotToBeEmptied);
                 cout<<output<<endl;
+                outputFile.push_back(output);
             }
             else if (individualTask == "Vehicle_registration_number_for_driver_of_age")
             {
@@ -161,6 +169,7 @@ void executeIndividualTasks()
                 if (!RNVectorSize)
                 {
                     cout<<"No such vehicle in the lot."<<endl;
+                    outputFile.push_back("No such vehicle in the lot.");
                     continue;
                 }
                 string outStr = "";
@@ -171,12 +180,22 @@ void executeIndividualTasks()
                         outStr += ",";
                 }
                 cout<<outStr<<endl;
+                outputFile.push_back(outStr);
             }
             else
                 cout<<"Exceptional task."<<endl;
+                outputFile.push_back("Exceptional task.");
         }
     }
     readInputFile.close();
+    return outputFile;
+}
+
+void setOutputFile(vector<string> output)
+{
+    std::ofstream outputFile("output.txt");
+    std::ostream_iterator<std::string> outputIterator(outputFile, "\n");
+    std::copy(output.begin(), output.end(), outputIterator);
     return;
 }
 
@@ -184,6 +203,9 @@ int main()
 {
     cout << "##################################################### PARKING LOT #####################################################" << endl;
     cout << "Note: input.txt(case sensetive) should be in same folder." << endl;
-    executeIndividualTasks();
+    vector<string> outputFile;
+    outputFile = executeIndividualTasks();
+    setOutputFile(outputFile);
+    cout <<endl<<"P.s: An output file has also been made for download.";
     return 0;
 }
