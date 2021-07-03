@@ -33,11 +33,23 @@ public:
         return "Car with vehicle registration number '" + plateNumber + "' has been parked at slot number " + to_string(slot);
     }
 
-    void eraseListValueOfMap(auto ListValue, vector<auto> &removeElementFromHere)
+    void deleteSlotFromAgeToSlots(int slot, vector<int> &removeElementFromVector)
+    {
+        for (auto it = removeElementFromVector.begin(); it != removeElementFromVector.end(); ++it)
+        {
+            if ((*it) == slot)
+            {
+                removeElementFromVector.erase(it);
+                return;
+            }
+        }
+    }
+
+    void deletePlateFromAgeToPlates(string plate, vector<string> &removeElementFromHere)
     {
         for (auto it = removeElementFromHere.begin(); it != removeElementFromHere.end(); ++it)
         {
-            if ((*it) == ListValue)
+            if ((*it) == plate)
             {
                 removeElementFromHere.erase(it);
                 return;
@@ -56,8 +68,8 @@ public:
         int driverAge = slotToPlateAndAge[slot].second;
         slotToPlateAndAge.erase(slot);
         plateToSlot.erase(registrationPlate);
-        eraseListValueOfMap(slot, ageToSlots[driverAge]);
-        eraseListValueOfMap(registrationPlate, ageToPlates[driverAge]);
+        deleteSlotFromAgeToSlots(slot, ageToSlots[driverAge]);
+        deletePlateFromAgeToPlates(registrationPlate, ageToPlates[driverAge]);
         return "Slot number " + to_string(slot) + " vacated, the car with vehicle registration number '" + registrationPlate + "' left the space, the driver of the car was of age " + to_string(driverAge);
     }
 
@@ -201,7 +213,7 @@ void setOutputFile(vector<string> output)
 
 int main()
 {
-    cout << "##################################################### PARKING LOT #####################################################" << endl;
+    cout << "######################## PARKING LOT ########################" << endl;
     cout << "Note: input.txt(case sensetive) should be in same folder." << endl;
     vector<string> outputFile;
     outputFile = executeIndividualTasks();
