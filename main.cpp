@@ -1,6 +1,40 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+/*
+PROBLEM STATEMENT: We own a parking lot that can hold up to ‘n’ cars at any given point in time. Each slot is given a number starting at one increasing with increasing distance from the entry point in steps of one. We want to create an automated ticketing system that allows our customers to use our parking lot without human intervention.
+When a car enters the parking lot, we want to have a ticket issued to the driver. The ticket issuing process includes:- 
+1)We are taking note of the number written on the vehicle registration plate and the age of the driver of the car.
+2)And we are allocating an available parking slot to the car before actually handing over a ticket to the driver (we assume that our customers are kind enough to always park in the slots allocated to them).
+
+The customer should be allocated a parking slot that is nearest to the entry. At the exit, the customer returns the ticket, marking the slot they were using as being available.
+
+QUERIES:
+1)Vehicle Registration numbers for all cars which are parked by the driver of a certain age,
+2)Slot number in which a car with a given vehicle registration plate is parked. 
+3)Slot numbers of all slots where cars of drivers of a particular age are parked.
+
+GIVEN(From FAQs):- {
+    n(number of slots) => 0<=n<=1000;
+    Parking lot is created in the begining only and only once.
+    The registration numbers are distinct.
+    Command format will be same as mentioned.
+    Commands will be limited to what is given in the DOC.
+    No GUI is required.
+    No .exe file is required.
+}
+*/
+
+/*
+THIS IS THE PARKING LOT CLASS, CONNTAINS PRIVATE VARIABLES FOR SLOTS AND VARIOUS DATA STRUCTURES FOR THE QUERIES ASKED IN THE PROBLEM STATEMENT:
+1)slots: An integer which holds 
+2)availableSlots: Stores the empty slots which are free and can be used to park cars in ascending order.
+3)ageToPlates: Contains age as key and corresponding registration plates for that age as vector.
+4)slotToPlateAndAge: Contains plate number of car and age of driver parked corresponding to a slot.
+5)ageToSlots: Contains age as key and corresponding slots for that age as vector.
+6) plateToSlot: Contains slot corresponding to a registration plates.
+ParkingLot(constructor): Called when instantiating the parking lot object to fill availableSlots in ascending order.
+*/
 class ParkingLot
 {
     int slots;
@@ -19,7 +53,9 @@ public:
             availableSlots.push(i);
         }
     }
-
+/*
+This function parks the vehicle to the slot which is nearest to the gate and adds the data to corresponding Data structure. Returns a string with the slot in which user is parked.
+*/
     string parkVehicle(string plateNumber, int age)
     {
         if (availableSlots.size() <= 0)
@@ -33,6 +69,7 @@ public:
         return "Car with vehicle registration number '" + plateNumber + "' has been parked at slot number " + to_string(slot);
     }
 
+//This function iterate the vector contained by ageToSlots and delete the value of particular slot
     void deleteSlotFromAgeToSlots(int slot, vector<int> &removeElementFromVector)
     {
         for (auto it = removeElementFromVector.begin(); it != removeElementFromVector.end(); ++it)
@@ -45,6 +82,8 @@ public:
         }
     }
 
+
+//This function iterate the vector contained by ageToPlates and delete the value of particular plate.
     void deletePlateFromAgeToPlates(string plate, vector<string> &removeElementFromHere)
     {
         for (auto it = removeElementFromHere.begin(); it != removeElementFromHere.end(); ++it)
@@ -57,6 +96,7 @@ public:
         }
     }
 
+//This function takes a slot as an input and clears the entire data of that slot i.e driver age, plate number, slot and their relations from all the data structures.  
     string emptyTheSpot(int slot)
     {
         if (slotToPlateAndAge.find(slot) == slotToPlateAndAge.end())
@@ -73,7 +113,8 @@ public:
         return "Slot number " + to_string(slot) + " vacated, the car with vehicle registration number '" + registrationPlate + "' left the space, the driver of the car was of age " + to_string(driverAge);
     }
 
-    vector<string> getPlateForGivenAge(int age)
+//This function returns vector of plates for a given age. In case their is no plate for corresponding age, it returns empty vector.
+    vector<string> getPlatesForGivenAge(int age)
     {
         vector<string> output;
         if (ageToPlates.find(age) == ageToPlates.end())
@@ -81,6 +122,7 @@ public:
         return ageToPlates[age];
     }
 
+//This function returns all the slots corresponding to given age if none present returns empty vector.
     vector<int> getAllSlotsForGivenAge(int age)
     {
         vector<int> output;
@@ -89,6 +131,7 @@ public:
         return ageToSlots[age];
     }
 
+//This function returns slot corresponding to a plate. Since slot number are starting from 1 we return 0 if slot is not occupied which is handled gracefully.
     int getSlotFromPlate(string plateNumber)
     {
         if(plateToSlot.find(plateNumber)==plateToSlot.end())
@@ -97,6 +140,13 @@ public:
     }
 };
 
+/*
+This function reads 'input.txt' file and process it line by line.
+There are different conditions based on different commands according the which the output is logged and is inserted in a file to be printed seperately.
+Here, we are creating a refrence to class ParkingLot which initializes out availble slot heap.
+We call the functions of this class to perform our tasks accordingly.
+It returns vector of string which is later converted to output.txt for user to download.
+*/
 vector<string> executeIndividualTasks()
 {
     vector<string> outputFile;
@@ -176,7 +226,7 @@ vector<string> executeIndividualTasks()
             else if (individualTask == "Vehicle_registration_number_for_driver_of_age")
             {
                 iss >> individualTask;
-                vector<string> registrationNumbers = parkingLot->getPlateForGivenAge(stoi(individualTask));
+                vector<string> registrationNumbers = parkingLot->getPlatesForGivenAge(stoi(individualTask));
                 int RNVectorSize = registrationNumbers.size();
                 if (!RNVectorSize)
                 {
@@ -203,6 +253,7 @@ vector<string> executeIndividualTasks()
     return outputFile;
 }
 
+// This function iterate the given vector of string and convert it to output.txt by leaving line corresponding to each line of output.
 void setOutputFile(vector<string> output)
 {
     std::ofstream outputFile("output.txt");
@@ -211,10 +262,11 @@ void setOutputFile(vector<string> output)
     return;
 }
 
+//Here we call executeIndividualTasks function to read and exectue tasks.
 int main()
 {
     cout << "######################## PARKING LOT ########################" << endl;
-    cout << "Note: input.txt(case sensetive) should be in same folder." << endl;
+    cout << "Note: input.txt(case sensetive) should be in same folder." << endl<<endl;
     vector<string> outputFile;
     outputFile = executeIndividualTasks();
     setOutputFile(outputFile);
