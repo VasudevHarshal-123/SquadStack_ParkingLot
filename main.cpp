@@ -40,7 +40,7 @@ class ParkingLot
     int slots;
     priority_queue<int, vector<int>, greater<int>> availableSlots;
     unordered_map<int, vector<string>> ageToPlates;
-    unordered_map<int, pair<string, int>> slotToPlateAndAge;
+    unordered_map<int, pair<string, int>> slotToPlateAndAge;    
     unordered_map<int, vector<int>> ageToSlots;
     unordered_map<string, int> plateToSlot;
 
@@ -126,7 +126,7 @@ This function parks the vehicle to the slot which is nearest to the gate and add
     vector<int> getAllSlotsForGivenAge(int age)
     {
         vector<int> output;
-        if (ageToPlates.find(age) == ageToPlates.end())
+        if (ageToSlots.find(age) == ageToSlots.end())
             return output;
         return ageToSlots[age];
     }
